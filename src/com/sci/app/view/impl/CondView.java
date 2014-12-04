@@ -22,27 +22,29 @@ import com.sci.app.view.ICondView;
 
 public class CondView implements ICondView{
 
-	private static JPanel panel = null;
+	private JPanel panel = null;
 	
-	private static JPanel createJPanel(){
-		if(panel == null){
-			panel = new JPanel();
-			panel.setPreferredSize(new Dimension(400,500));
-//			panel.setSize(new Dimension(400,500));
-			panel.setBorder(BorderFactory.createTitledBorder("检索条件"));
-			panel.setLayout(new GridBagLayout());
-			
-			drawTimespan(panel);
-			drawLanguage(panel);
-			drawDoctype(panel);
-			drawExps(panel);
-			drawBottom(panel);
-			
-		}
-		return panel;
+	private JComboBox fromTimespanComponent = null;
+	private JComboBox toTimespanComponent = null;
+	private JList languageComponent = null;
+	private JList doctypeComponent = null;
+	private JTextArea expsComponent = null;
+	
+	public CondView(){
+		panel = new JPanel();
+		panel.setPreferredSize(new Dimension(400,500));
+//		panel.setSize(new Dimension(400,500));
+		panel.setBorder(BorderFactory.createTitledBorder("检索条件"));
+		panel.setLayout(new GridBagLayout());
+		
+		drawTimespan(panel);
+		drawLanguage(panel);
+		drawDoctype(panel);
+		drawExps(panel);
+		drawBottom(panel);
 	}
 	
-	public static void drawTimespan(JPanel panel){
+	public void drawTimespan(JPanel panel){
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5, 5, 5, 5);
 		JLabel timespan = new JLabel("时间跨度：");
@@ -62,15 +64,13 @@ public class CondView implements ICondView{
 		JLabel from = new JLabel("从");
 //		from.setPreferredSize(new Dimension(30,10));
 		panel.add(from,gbc);
-		JComboBox fComboBox = new JComboBox(Timespan.getTimespan());
-		fComboBox.setName(UIIdentity.FROM_TIME_COMBOBOX);
-		panel.add(fComboBox,gbc);
+		fromTimespanComponent = new JComboBox(Timespan.getTimespan());
+		panel.add(fromTimespanComponent,gbc);
 		JLabel to = new JLabel("到");
 //		to.setPreferredSize(new Dimension(30,10));
 		panel.add(to,gbc);
-		JComboBox tComboBox = new JComboBox(Timespan.getTimespan());
-		tComboBox.setName(UIIdentity.TO_TIME_COMBOBOX);
-		panel.add(tComboBox,gbc);
+		toTimespanComponent = new JComboBox(Timespan.getTimespan());
+		panel.add(toTimespanComponent,gbc);
 		
 		JPanel strut = new JPanel();
 		gbc.gridwidth = 0;
@@ -80,7 +80,7 @@ public class CondView implements ICondView{
 		
 	}
 	
-	public static void drawLanguage(JPanel panel){
+	public void drawLanguage(JPanel panel){
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(10, 10, 10, 10);
 		JLabel label = new JLabel("语种：");
@@ -91,12 +91,11 @@ public class CondView implements ICondView{
 		gbc.weightx = 0;
 		panel.add(label,gbc);
 		
-		JList list = new JList(Language.getLanguages());
-		list.setName(UIIdentity.LANGUAGE_LIST);
+		JList languageComponent = new JList(Language.getLanguages());
 		//list.setPreferredSize(new Dimension(200,80));
-		list.setVisibleRowCount(5);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane scroll = new JScrollPane(list);
+		languageComponent.setVisibleRowCount(5);
+		languageComponent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scroll = new JScrollPane(languageComponent);
 		scroll.setPreferredSize(new Dimension(150, 80));
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridwidth = 5;
@@ -112,7 +111,7 @@ public class CondView implements ICondView{
 		
 	}
 	
-	public static void drawDoctype(JPanel panel){
+	public void drawDoctype(JPanel panel){
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(10, 10, 10, 10);
 		
@@ -123,12 +122,11 @@ public class CondView implements ICondView{
 		gbc.weightx = 0;
 		panel.add(label,gbc);
 		
-		JList list = new JList(DocType.getDocTypes());
-		list.setName(UIIdentity.DOCTYPE_LIST);
+		JList doctypeComponent = new JList(DocType.getDocTypes());
 		//list.setPreferredSize(new Dimension(200,80));
-		list.setVisibleRowCount(5);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane scroll = new JScrollPane(list);
+		doctypeComponent.setVisibleRowCount(5);
+		doctypeComponent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scroll = new JScrollPane(doctypeComponent);
 		scroll.setPreferredSize(new Dimension(150, 80));
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridwidth = 5;
@@ -143,7 +141,7 @@ public class CondView implements ICondView{
 		panel.add(strut,gbc);
 	}
 	
-	public static void drawExps(JPanel panel){
+	public void drawExps(JPanel panel){
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(10, 10, 10, 10);
 		
@@ -154,12 +152,11 @@ public class CondView implements ICondView{
 		gbc.weightx = 0;
 		panel.add(label,gbc);
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setName(UIIdentity.EXPS_TEXTAREA);
+		expsComponent = new JTextArea();
 		//textArea.setRows(10);
-		textArea.setLineWrap(true); // 激活自动换行功能
-		textArea.setWrapStyleWord(true);
-		JScrollPane scroll = new JScrollPane(textArea);
+		expsComponent.setLineWrap(true); // 激活自动换行功能
+		expsComponent.setWrapStyleWord(true);
+		JScrollPane scroll = new JScrollPane(expsComponent);
 		scroll.setPreferredSize(new Dimension(150, 80));
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridwidth = 0;
@@ -167,7 +164,7 @@ public class CondView implements ICondView{
 		panel.add(scroll,gbc);
 	}
 	
-	public static void drawBottom(JPanel panel){
+	public void drawBottom(JPanel panel){
 		GridBagConstraints gbc = new GridBagConstraints();
 		
 		JPanel bottom = new JPanel();
@@ -182,7 +179,33 @@ public class CondView implements ICondView{
 	
 	@Override
 	public JPanel getJPanel() {
-		return createJPanel();
+		return panel;
 	}
+
+	public JPanel getPanel() {
+		return panel;
+	}
+
+	public JComboBox getFromTimespanComponent() {
+		return fromTimespanComponent;
+	}
+
+	public JComboBox getToTimespanComponent() {
+		return toTimespanComponent;
+	}
+
+	public JList getLanguageComponent() {
+		return languageComponent;
+	}
+
+	public JList getDoctypeComponent() {
+		return doctypeComponent;
+	}
+
+	@Override
+	public JTextArea getExpsComponent() {
+		return expsComponent;
+	}
+	
 
 }

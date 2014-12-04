@@ -87,18 +87,18 @@
     )
   )
 
-(def sid (getSID))
+;(def sid (getSID))
 
-(defn check-sid 
-  "不为空时则说明sid存在"  
-  []
-  (
-    if(empty? sid) false true
-    )
-  )
+;(defn check-sid 
+;  "不为空时则说明sid存在"  
+;  []
+;  (
+;    if(empty? sid) false true
+;    )
+;  )
 
 (defn set-search-exps
-  [exps]
+  [sid,exps]
   (
     let [param (conj (conj wos_advsearch_param {"SID" sid}) (conj wos_advsearch_param {"value(input1)" exps}))]
       (client/post "http://apps.webofknowledge.com/WOS_AdvancedSearch.do" {:form-params param
@@ -108,7 +108,7 @@
   )
 
 (defn outbound
-  [exps,fNum,tNum]
+  [sid,exps,fNum,tNum]
   (
     let [selectedIds (clojure.string/join ";" (range fNum (+ 1 tNum)))
          totalMarked (+(- tNum fNum) 1)]
@@ -121,7 +121,7 @@
     )
   )
 
-(defn pull-file
+(defn fetch-file
   [exps,fNum,tNum]
   (
     let [url ((:headers (outbound exps fNum tNum)) "Location")]

@@ -1,6 +1,5 @@
 package com.sci.app;
 
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -8,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -18,55 +18,42 @@ import com.sci.app.view.ICondView;
 import com.sci.app.view.IDBView;
 import com.sci.app.view.impl.BaseCustomView;
 import com.sci.app.view.impl.CondView;
-import com.sci.app.view.impl.DBView;
 
-public class SearchViewer extends JFrame{
-
+public class TaskConfigurationDialog {
+	
 	private static final int WIDTH = 800;
-	private static final int HIGHT = 600;
+	private static final int HIGHT = 700;
 	
 	ICondView condView = null;
 	IDBView dbView = null;
 	IBaseCustomView baseCustomView = null;
-	
-	
-	public SearchViewer(){
-		this.setTitle("");
-		setSize(WIDTH, HIGHT);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		init();
-	}
-	public void init(){
-		Container contentPane = getContentPane();
-		contentPane.setLayout(new GridBagLayout());
+	SearchModel model;
+
+	public  SearchModel showDialog(JFrame owner,Boolean modal){
+		
+		final JDialog dialog = new JDialog(owner,modal);
+		
+		dialog.setSize(WIDTH, HIGHT);
+		dialog.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(15, 10, 15, 10);//设置组件之间彼此的间距
 		
-		//数据库选择视图
-//		dbView = new DBView();
-//		gbc.fill = GridBagConstraints.BOTH;
-//		gbc.gridwidth = 0;
-//		gbc.weightx = 0;
-//		gbc.weighty = 0;
-//		contentPane.add(dbView.getJPanle(),gbc);
 		
 		baseCustomView = new BaseCustomView();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.gridwidth = 0;
 		gbc.weightx = 0;
 		gbc.weighty = 0;
-		contentPane.add(baseCustomView.getJPanle(),gbc);
+		dialog.add(baseCustomView.getJPanle(),gbc);
 		
 		condView = new CondView();
 		JPanel condPanel = condView.getJPanel();
-//		gbc.gridx = 0;
-//		gbc.gridy = 1;
 		gbc.gridwidth = 0;
 		gbc.gridheight = 1;
 		gbc.weightx = 1;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weighty = 1;
-		contentPane.add(condPanel,gbc);
+		dialog.add(condPanel,gbc);
 		
 		
 		JPanel bottomPanel = new JPanel();
@@ -79,7 +66,7 @@ public class SearchViewer extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SearchModel model = new SearchModel();
+				model = new SearchModel();
 				if(baseCustomView.getDBComponent() != null){
 					String code = DBComboBoxModel.nameCodeMap.get(baseCustomView.getDBComponent().getSelectedItem());
 					model.setDbName(code);
@@ -90,24 +77,31 @@ public class SearchViewer extends JFrame{
 				if(condView.getToTimespanComponent() != null){
 					model.setToTime(condView.getToTimespanComponent().getSelectedItem().toString());
 				}
+				if(condView.getLanguageComponent() != null){
+					model.setLanguage(condView.getLanguageComponent().getSelectedValue().toString());
+				}
+				if(condView.getDoctypeComponent() != null){
+					model.setDoctype(condView.getDoctypeComponent().getSelectedValue().toString());
+				}
 				if(condView.getExpsComponent() != null){
 					model.setExps(condView.getExpsComponent().getText());
 				}
-				System.out.println("model db:"+model.getDbName()+", fromtime:"+model.getFromTime()+", totime:"+model.getToTime()
-						+", exps:"+model.getExps());
-				
+//				System.out.println("model db:"+model.getDbName()+", fromtime:"+model.getFromTime()+", totime:"+model.getToTime()
+//						+", exps:"+model.getExps());
+				dialog.dispose();
 			}
 		});
 		
 		bottomPanel.add(btn);
 		
-		contentPane.add(bottomPanel,gbc);
+		dialog.add(bottomPanel,gbc);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
 		
-		this.setVisible(true);
+		return model;
 	}
 	
-	public static void main(String[] args){
-		new SearchViewer();
+	public void openView(){
+		
 	}
-
 }
