@@ -1,8 +1,9 @@
 (ns com.sci.app.clojure.core)
-
+(use 'hickory.core)
+(require '[clojure.string :as string])
 (require '[clj-http.client :as client])
 (require '[clj-http.util :as http-util])
-
+(require '[hickory.select :as s])
 
 
 (def wos_advsearch_param 
@@ -18,6 +19,7 @@
    "value(limitCount)"	"14"
    "limitStatus" "collapsed"
    "range" "ALL"
+   "period"	"Year Range"
    "startYear" "1900"
    "endYear" "2014"
    "editions" ["SCI","SSCI","AHCI","ISTP","ISSHP","CCR","IC"]
@@ -73,8 +75,6 @@
 
 
 
-
-
 (defn getSID []
   (
     let [cookies (clj-http.cookies/cookie-store)]
@@ -87,25 +87,55 @@
     )
   )
 
-;(def sid (getSID))
-
-;(defn check-sid 
-;  "不为空时则说明sid存在"  
-;  []
-;  (
-;    if(empty? sid) false true
-;    )
-;  )
-
 (defn set-search-exps
+  "设置检索表达式,并解析出该表达式可以检索出的记录数"
   [sid,exps]
   (
     let [param (conj (conj wos_advsearch_param {"SID" sid}) (conj wos_advsearch_param {"value(input1)" exps}))]
-      (client/post "http://apps.webofknowledge.com/WOS_AdvancedSearch.do" {:form-params param
+      (
+        let [rst-htree (-> (client/get ((:headers (client/post "http://apps.webofknowledge.com/WOS_AdvancedSearch.do" {:form-params param
                                                                            ;:debug true 
-                                                                           })
+                                                                           })) "Location")) :body parse as-hickory )]
+        (->
+          (s/select (s/child 
+                    (s/class "historyResults")
+                    (s/tag :a)
+                           ) 
+                    rst-htree
+                    )
+          first :content first string/trim
+          )
+        )
     )
   )
+
+(defn set-search-adv
+  "设置高级检索条件,并解析出该表达式可以检索出的记录数"
+  [sid,exps]
+   (
+    let [param (conj (conj wos_advsearch_param {"SID" sid}) (conj wos_advsearch_param {"value(input1)" exps}))]
+      (
+        let [rst-htree (-> (client/get ((:headers (client/post "http://apps.webofknowledge.com/WOS_AdvancedSearch.do" {:form-params param
+                                                                           ;:debug true 
+                                                                           })) "Location")) :body parse as-hickory )]
+        (->
+          (s/select (s/child 
+                    (s/class "historyResults")
+                    (s/tag :a)
+                           ) 
+                    rst-htree
+                    )
+          first :content first string/trim
+          )
+        )
+    )
+  )
+
+(defn set-search-adv-param
+  ""
+  []
+  )
+
 
 (defn outbound
   [sid,exps,fNum,tNum]
@@ -122,9 +152,9 @@
   )
 
 (defn fetch-file
-  [exps,fNum,tNum]
+  [sid,exps,fNum,tNum]
   (
-    let [url ((:headers (outbound exps fNum tNum)) "Location")]
+    let [url ((:headers (outbound sid exps fNum tNum)) "Location")]
     (
       :body (client/get url)
       )
