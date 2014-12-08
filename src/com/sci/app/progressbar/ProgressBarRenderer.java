@@ -1,6 +1,8 @@
 package com.sci.app.progressbar;
 
 import java.awt.Component;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.swing.BorderFactory;
 import javax.swing.JProgressBar;
@@ -31,4 +33,10 @@ public class ProgressBarRenderer extends DefaultTableCellRenderer{
         b.setValue(i);
         return b;
     }
+	
+	public static Integer getProgrees(Integer num,Integer total){
+		BigDecimal bd = new BigDecimal(num.doubleValue()/total.doubleValue());
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		return Double.valueOf(bd.doubleValue()*100).intValue();
+	}
 }

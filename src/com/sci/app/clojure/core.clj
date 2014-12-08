@@ -4,6 +4,7 @@
 (require '[clj-http.client :as client])
 (require '[clj-http.util :as http-util])
 (require '[hickory.select :as s])
+(import 'com.sci.app.model.SearchModel)
 
 
 (def wos_advsearch_param 
@@ -19,16 +20,15 @@
    "value(limitCount)"	"14"
    "limitStatus" "collapsed"
    "range" "ALL"
-   "period"	"Year Range"
-   "startYear" "1900"
-   "endYear" "2014"
+   ;"startYear" "1900"
+   ;"endYear" "2014"
    "editions" ["SCI","SSCI","AHCI","ISTP","ISSHP","CCR","IC"]
    "rs_sort_by" "PY.D;LD.D;SO.A;VL.D;PG.A;AU.A"
    "ss_lemmatization" "On"
    "ss_spellchecking" "Suggest"
    "SinceLastVisit_UTC" ""
    "SinceLastVisit_DATE" ""
-   "period" "Range Selection"
+   "period"	"Year Range"
    "ss_query_language" ""
    }
   )
@@ -78,11 +78,14 @@
 (defn getSID []
   (
     let [cookies (clj-http.cookies/cookie-store)]
-	  (client/get "http://apps.webofknowledge.com/" {:cookie-store cookies})
-	  (for [a (. cookies getCookies)
-	        :when(= "SID" (. a getName))
-	        ]
-	    (. a getValue)
+	    (client/get "http://apps.webofknowledge.com/" {:cookie-store cookies})
+	    (->
+			  (for [a (. cookies getCookies)
+			        :when(= "SID" (. a getName))
+			        ]
+			    (. a getValue)
+	      )
+	      first    
 	    )
     )
   )
@@ -109,15 +112,30 @@
     )
   )
 
+(defn get-adv-param
+  [^SearchModel model]
+  (
+    merge wos_advsearch_param {
+                               "value(input1)" (.getExps model)
+														   "value(input2)" (.getLanguage model)
+														   "value(input3)" (.getDoctype model)
+														   "startYear" (.getFromTime model)
+														   "endYear" (.getToTime model)
+                               }
+  )
+)
 (defn set-search-adv
   "设置高级检索条件,并解析出该表达式可以检索出的记录数"
-  [sid,exps]
+  [sid,^SearchModel model]
    (
-    let [param (conj (conj wos_advsearch_param {"SID" sid}) (conj wos_advsearch_param {"value(input1)" exps}))]
+    let [param (conj {"SID" sid} (get-adv-param model))]
       (
-        let [rst-htree (-> (client/get ((:headers (client/post "http://apps.webofknowledge.com/WOS_AdvancedSearch.do" {:form-params param
-                                                                           ;:debug true 
-                                                                           })) "Location")) :body parse as-hickory )]
+        let [rst-htree (-> (client/get (
+                                         (:headers (client/post "http://apps.webofknowledge.com/WOS_AdvancedSearch.do" {:form-params param})
+                                                   )
+                                         "Location")
+                                       ) :body parse as-hickory 
+                         )]
         (->
           (s/select (s/child 
                     (s/class "historyResults")
@@ -130,12 +148,6 @@
         )
     )
   )
-
-(defn set-search-adv-param
-  ""
-  []
-  )
-
 
 (defn outbound
   [sid,exps,fNum,tNum]

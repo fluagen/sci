@@ -70,6 +70,7 @@ public class MainApp extends JFrame{
 				TaskConfigurationDialog dialog = new TaskConfigurationDialog();
 				SearchModel model = dialog.showDialog(app, true);
 				tableModel.addRow(model);
+				TaskExecutor.execute(tableModel, model);
 			}
 		});
 		

@@ -3,11 +3,14 @@ package com.sci.app.model;
 public class SearchModel {
 
 	private String dbName;
-	private String fromTime;
-	private String toTime;
-	private String language;
-	private String doctype;
-	private String exps;
+	private String fromTime = "1900";
+	private String toTime = "2020";
+	private String language = "";
+	private String doctype = "";
+	private String exps = "";
+	
+	private String interval = "30";//秒单位
+	private String startupTime = "";//启动时间
 	
 	
 	public String getDbName() {
@@ -45,5 +48,17 @@ public class SearchModel {
 	}
 	public void setExps(String exps) {
 		this.exps = exps;
+	}
+	public String getInterval() {
+		return interval;
+	}
+	public void setInterval(String interval) {
+		this.interval = interval;
+	}
+	public String getStartupTime() {
+		return startupTime;
+	}
+	public void setStartupTime(String startupTime) {
+		this.startupTime = startupTime;
 	}
 }
