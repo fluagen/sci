@@ -1,6 +1,5 @@
 package com.sci.app;
 
-import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -8,65 +7,56 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import com.sci.app.fetch.Fetcher;
 import com.sci.app.model.DBComboBoxModel;
-import com.sci.app.model.SearchModel;
+import com.sci.app.model.FetcherModel;
+import com.sci.app.toolkit.DateToolkit;
+import com.sci.app.toolkit.MessageDialog;
 import com.sci.app.view.IBaseCustomView;
 import com.sci.app.view.ICondView;
 import com.sci.app.view.IDBView;
 import com.sci.app.view.impl.BaseCustomView;
 import com.sci.app.view.impl.CondView;
-import com.sci.app.view.impl.DBView;
 
-public class SearchViewer extends JFrame{
-
+public class FetcherTaskDialog {
+	
 	private static final int WIDTH = 800;
-	private static final int HIGHT = 600;
+	private static final int HIGHT = 700;
 	
 	ICondView condView = null;
 	IDBView dbView = null;
 	IBaseCustomView baseCustomView = null;
-	
-	
-	public SearchViewer(){
-		this.setTitle("");
-		setSize(WIDTH, HIGHT);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		init();
-	}
-	public void init(){
-		Container contentPane = getContentPane();
-		contentPane.setLayout(new GridBagLayout());
+	FetcherModel model;
+
+	public  FetcherModel showDialog(JFrame owner,Boolean modal){
+		
+		final JDialog dialog = new JDialog(owner,modal);
+		
+		dialog.setSize(WIDTH, HIGHT);
+		dialog.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(15, 10, 15, 10);//设置组件之间彼此的间距
 		
-		//数据库选择视图
-//		dbView = new DBView();
-//		gbc.fill = GridBagConstraints.BOTH;
-//		gbc.gridwidth = 0;
-//		gbc.weightx = 0;
-//		gbc.weighty = 0;
-//		contentPane.add(dbView.getJPanle(),gbc);
 		
 		baseCustomView = new BaseCustomView();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.gridwidth = 0;
 		gbc.weightx = 0;
 		gbc.weighty = 0;
-		contentPane.add(baseCustomView.getJPanle(),gbc);
+		dialog.add(baseCustomView.getJPanle(),gbc);
 		
 		condView = new CondView();
 		JPanel condPanel = condView.getJPanel();
-//		gbc.gridx = 0;
-//		gbc.gridy = 1;
 		gbc.gridwidth = 0;
 		gbc.gridheight = 1;
 		gbc.weightx = 1;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weighty = 1;
-		contentPane.add(condPanel,gbc);
+		dialog.add(condPanel,gbc);
 		
 		
 		JPanel bottomPanel = new JPanel();
@@ -74,15 +64,18 @@ public class SearchViewer extends JFrame{
 		gbc.gridheight = 1;
 		gbc.weighty = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		JButton btn = new JButton("检索");
+		JButton btn = new JButton("确定");
 		btn.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SearchModel model = new SearchModel();
+				model = new FetcherModel();
 				if(baseCustomView.getDBComponent() != null){
 					String code = DBComboBoxModel.nameCodeMap.get(baseCustomView.getDBComponent().getSelectedItem());
 					model.setDbName(code);
+				}
+				if(baseCustomView.getStartTimeComponent() != null){
+					model.setStartTime(baseCustomView.getStartTimeComponent().getText());
 				}
 				if(condView.getFromTimespanComponent() != null){
 					model.setFromTime(condView.getFromTimespanComponent().getSelectedItem().toString());
@@ -90,24 +83,45 @@ public class SearchViewer extends JFrame{
 				if(condView.getToTimespanComponent() != null){
 					model.setToTime(condView.getToTimespanComponent().getSelectedItem().toString());
 				}
+				if(condView.getLanguageComponent() != null){
+					model.setLanguage(condView.getLanguageComponent().getSelectedValue().toString());
+				}
+				if(condView.getDoctypeComponent() != null){
+					model.setDoctype(condView.getDoctypeComponent().getSelectedValue().toString());
+				}
 				if(condView.getExpsComponent() != null){
 					model.setExps(condView.getExpsComponent().getText());
 				}
-				System.out.println("model db:"+model.getDbName()+", fromtime:"+model.getFromTime()+", totime:"+model.getToTime()
-						+", exps:"+model.getExps());
-				
+//				System.out.println("model db:"+model.getDbName()+", fromtime:"+model.getFromTime()+", totime:"+model.getToTime()
+//						+", exps:"+model.getExps());
+				if(!verify(model)){
+					model.setValid(false);
+					return;
+				}
+				dialog.dispose();
 			}
 		});
 		
 		bottomPanel.add(btn);
 		
-		contentPane.add(bottomPanel,gbc);
+		dialog.add(bottomPanel,gbc);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
 		
-		this.setVisible(true);
+		return model;
 	}
 	
-	public static void main(String[] args){
-		new SearchViewer();
+	private boolean verify(FetcherModel model){
+		boolean passed = true;
+		//验证任务开始时间格式
+		if(!DateToolkit.verify(model.getStartTime())){
+			MessageDialog.showMessage("请输入正确的日期格式！");
+			return false;
+		}
+		if(model.getExps() == null || model.getExps().equals("")){
+			MessageDialog.showMessage("请输入检索表达式！");
+			return false;
+		}
+		return passed;
 	}
-
 }

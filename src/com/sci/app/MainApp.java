@@ -14,10 +14,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 
-import junit.awtui.ProgressBar;
-
+import com.sci.app.model.FetcherModel;
 import com.sci.app.model.FetcherTableModel;
-import com.sci.app.model.SearchModel;
 import com.sci.app.progressbar.ProgressBarRenderer;
 
 public class MainApp extends JFrame{
@@ -67,8 +65,11 @@ public class MainApp extends JFrame{
 		btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				TaskConfigurationDialog dialog = new TaskConfigurationDialog();
-				SearchModel model = dialog.showDialog(app, true);
+				FetcherTaskDialog dialog = new FetcherTaskDialog();
+				FetcherModel model = dialog.showDialog(app, true);
+				if(!model.isValid()){
+					return;
+				}
 				tableModel.addRow(model);
 				TaskExecutor.execute(tableModel, model);
 			}

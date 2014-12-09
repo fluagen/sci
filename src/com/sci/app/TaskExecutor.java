@@ -4,16 +4,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import com.sci.app.fetch.Fetcher;
+import com.sci.app.model.FetcherModel;
 import com.sci.app.model.FetcherTableModel;
-import com.sci.app.model.SearchModel;
 import com.sci.app.progressbar.ProgressBarRenderer;
 import com.sci.app.toolkit.Pagination;
 
 public class TaskExecutor {
 
 	
-	public static void execute(FetcherTableModel fetchertableModel,SearchModel searchModel){
-		final SearchModel model = searchModel;
+	public static void execute(FetcherTableModel fetchertableModel,FetcherModel fetcherModel){
+		final FetcherModel model = fetcherModel;
 		final FetcherTableModel tableModel = fetchertableModel;
 		ScheduledExecutorService s = Executors.newSingleThreadScheduledExecutor();
 		s.execute(new Runnable() {

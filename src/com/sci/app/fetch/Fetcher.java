@@ -10,7 +10,7 @@ import clojure.lang.IFn;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 
-import com.sci.app.model.SearchModel;
+import com.sci.app.model.FetcherModel;
 
 public class Fetcher {
 
@@ -26,13 +26,13 @@ public class Fetcher {
 	private static IFn fetch_file = RT.var("com.sci.app.clojure.core",
 			"fetch-file").fn();
 	
-	SearchModel searchModel;
+	FetcherModel model;
 	File localDic;
 	String sid;
 	
-	public Fetcher(SearchModel searchModel){
-		this.searchModel = searchModel;
-		sid = makeSid(searchModel);
+	public Fetcher(FetcherModel model){
+		this.model = model;
+		sid = makeSid(model);
 		localDic = makeLocalDic(sid);
 	}
 	
@@ -45,7 +45,7 @@ public class Fetcher {
 		return dic;
 	}
 	
-	private String makeSid(SearchModel searchModel){
+	private String makeSid(FetcherModel model){
 		String sid = (String) getSID.invoke();
 		if(sid == null || sid.trim().equals("")){
 			return "";
@@ -53,11 +53,14 @@ public class Fetcher {
 		System.out.println("sid:"+sid);
 		return sid;
 	}
+	public String getSid(){
+		return sid;
+	}
 	
 	public Integer getRecordTotal(){
 		int total = 0;
 		try{
-			String countRecord = (String)set_search_adv.invoke(sid,searchModel);
+			String countRecord = (String)set_search_adv.invoke(sid,model);
 			countRecord = countRecord.replace(",", "");
 			total = Integer.parseInt(countRecord);	
 		}catch(Exception e){
@@ -67,7 +70,7 @@ public class Fetcher {
 	
 	public String fetch(int startNum,int endNum){
 		
-		String content = (String) fetch_file.invoke(sid,searchModel.getExps(),startNum,endNum);
+		String content = (String) fetch_file.invoke(sid,model.getExps(),startNum,endNum);
 		
 		write(startNum,endNum,content);
 		
@@ -89,10 +92,17 @@ public class Fetcher {
 	
 	public boolean mergeTxt(){
 		File[] files = localDic.listFiles();
+		if(files == null || files.length == 0){
+			return false;
+		}
 		try{
-			File savedrecs = new File(localDic.getPath()+File.separator+"savedrecs.txt");
+			File dic = new File(localDic.getPath()+File.separator+"save");
+			dic.mkdirs();
+			File savedrecs = new File(localDic.getPath()+File.separator+"save/savedrecs.txt");
 			PrintWriter writer = new PrintWriter(savedrecs);
 			for(int i=0; i<files.length; i++){
+				//File f = files[i];
+				//if(f.isDirectory()) continue;
 				BufferedReader reader = new BufferedReader(new FileReader(files[i]));
 				
 				String line = "";
@@ -100,7 +110,7 @@ public class Fetcher {
 					if(line.contains("FN") || line.contains("VR") || line.contains("EF")){
 						continue;
 					}
-					writer.write(line);
+					writer.println(line);
 				}
 				reader.close();
 				writer.flush();
@@ -108,8 +118,41 @@ public class Fetcher {
 			writer.flush();
 			writer.close();
 		}catch(Exception e){
+			e.printStackTrace();
 			return false;
 		}
 		return true;
+	}
+	
+	public static void main(String[] args){
+		File f = new File("F:/workspace/sci-app/sci/fetchFile/4FgJ9QL6i8LG1UpfmAJ");
+		File[] files = f.listFiles();
+		try{
+			File dic = new File("F:/workspace/sci-app/sci/fetchFile/4FgJ9QL6i8LG1UpfmAJ/save");
+			dic.mkdirs();
+			File savedrecs = new File("F:/workspace/sci-app/sci/fetchFile/4FgJ9QL6i8LG1UpfmAJ/save/savedrecs.txt");
+			PrintWriter writer = new PrintWriter(savedrecs);
+			
+			for(int i=0; i<files.length; i++){
+				File f2 = files[i];
+				if(f2.isDirectory()) continue;
+				BufferedReader reader = new BufferedReader(new FileReader(files[i]));
+				String line = "";
+				while((line = reader.readLine()) != null){
+					if(line.contains("FN") || line.contains("VR") || line.contains("EF")){
+						continue;
+					}
+//					writer.write(line);
+					writer.println(line);
+					writer.flush();
+				}
+				reader.close();
+				writer.flush();
+			}
+			writer.flush();
+			writer.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 }

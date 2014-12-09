@@ -19,7 +19,7 @@ public class Demo4 {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MyOptionPane optionPane = new MyOptionPane();
-                int option = optionPane.showYesNoMessage("Close frame", "Do you really want to close the frame?");
+                int option = optionPane.showYesNoMessage("Close frame", "Do  frame?");
                 if(option == MyOptionPane.YES) {
                     JButton button = (JButton)e.getSource();
                     SwingUtilities.getWindowAncestor(button).dispose();

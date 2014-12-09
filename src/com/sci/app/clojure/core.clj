@@ -4,7 +4,7 @@
 (require '[clj-http.client :as client])
 (require '[clj-http.util :as http-util])
 (require '[hickory.select :as s])
-(import 'com.sci.app.model.SearchModel)
+(import 'com.sci.app.model.FetcherModel)
 
 
 (def wos_advsearch_param 
@@ -113,7 +113,7 @@
   )
 
 (defn get-adv-param
-  [^SearchModel model]
+  [^FetcherModel model]
   (
     merge wos_advsearch_param {
                                "value(input1)" (.getExps model)
@@ -126,7 +126,7 @@
 )
 (defn set-search-adv
   "设置高级检索条件,并解析出该表达式可以检索出的记录数"
-  [sid,^SearchModel model]
+  [sid,^FetcherModel model]
    (
     let [param (conj {"SID" sid} (get-adv-param model))]
       (

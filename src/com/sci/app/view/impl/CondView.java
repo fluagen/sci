@@ -17,7 +17,6 @@ import javax.swing.ListSelectionModel;
 import com.sci.app.toolkit.DocType;
 import com.sci.app.toolkit.Language;
 import com.sci.app.toolkit.Timespan;
-import com.sci.app.toolkit.UIIdentity;
 import com.sci.app.view.ICondView;
 
 public class CondView implements ICondView{

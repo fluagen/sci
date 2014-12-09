@@ -1,6 +1,6 @@
 package com.sci.app.model;
 
-public class SearchModel {
+public class FetcherModel {
 
 	private String dbName;
 	private String fromTime = "1900";
@@ -9,8 +9,10 @@ public class SearchModel {
 	private String doctype = "";
 	private String exps = "";
 	
-	private String interval = "30";//秒单位
-	private String startupTime = "";//启动时间
+	private String interval = "5";//秒单位
+	private String startTime = "";//启动时间
+	
+	private boolean valid = true;
 	
 	
 	public String getDbName() {
@@ -55,10 +57,16 @@ public class SearchModel {
 	public void setInterval(String interval) {
 		this.interval = interval;
 	}
-	public String getStartupTime() {
-		return startupTime;
+	public String getStartTime() {
+		return startTime;
 	}
-	public void setStartupTime(String startupTime) {
-		this.startupTime = startupTime;
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+	public boolean isValid() {
+		return valid;
+	}
+	public void setValid(boolean valid) {
+		this.valid = valid;
 	}
 }

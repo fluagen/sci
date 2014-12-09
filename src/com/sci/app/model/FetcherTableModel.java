@@ -26,15 +26,15 @@ public class FetcherTableModel extends DefaultTableModel{
         return false;
     }
 	
-	public void addRow(SearchModel searchModel){
-		if(searchModel != null){
+	public void addRow(FetcherModel model){
+		if(model != null){
 			Vector<Object> row = new Vector<Object>();
-			row.add(searchModel.getDbName());
-			String timespan = searchModel.getFromTime() +" 至 "+ searchModel.getToTime();
+			row.add(model.getDbName());
+			String timespan = model.getFromTime() +" 至 "+ model.getToTime();
 			row.add(timespan);
-			row.add(searchModel.getLanguage());
-			row.add(searchModel.getDoctype());
-			row.add(searchModel.getExps());
+			row.add(model.getLanguage());
+			row.add(model.getDoctype());
+			row.add(model.getExps());
 			row.add("");
 			row.add(0);//执行进度条
 			
