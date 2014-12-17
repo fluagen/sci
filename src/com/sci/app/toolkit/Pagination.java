@@ -12,6 +12,9 @@ public class Pagination {
 	}
 	
 	public static int countPageNum(int total,int perNum){
+		if(total < perNum){
+			return 1;
+		}
 		int pagenum = total / perNum;
 		if(pagenum%perNum > 0){
 			pagenum += 1;

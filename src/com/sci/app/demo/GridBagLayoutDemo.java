@@ -1,4 +1,4 @@
-package com.sci.app;
+package com.sci.app.demo;
 
 /*
  * GirdBagLayoutDemo.java requires no other files.
@@ -16,7 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
  
-public class Demo2 extends JFrame{
+public class GridBagLayoutDemo extends JFrame{
 	
 	private JButton btn1 = new JButton("Button1");
 	private JButton btn2 = new JButton("Button2");
@@ -25,7 +25,7 @@ public class Demo2 extends JFrame{
 	private JButton btn5 = new JButton("Button5 what a fine d");
 	private JButton btn6 = new JButton("Button6 what a fines");
 	
-	Demo2()
+	GridBagLayoutDemo()
 	{
 		super();
 		initComponent();
@@ -105,7 +105,7 @@ public class Demo2 extends JFrame{
 	
 	public static void main(String[] args)
 	{
-		Demo2 frame = new Demo2();
+		GridBagLayoutDemo frame = new GridBagLayoutDemo();
 		frame.pack();
 		frame.setVisible(true);
 	}

@@ -1,4 +1,4 @@
-package com.sci.app;
+package com.sci.app.demo;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author wenliang
  */
-public class Demo3 extends JFrame implements ActionListener, Runnable {
+public class JTableDemo extends JFrame implements ActionListener, Runnable {
 
     private JButton bt1, bt2, bt3;
     private JScrollPane jspane;
@@ -25,7 +25,7 @@ public class Demo3 extends JFrame implements ActionListener, Runnable {
     int a = 0;
     int b = 1;
 
-    public Demo3() {//构造方法
+    public JTableDemo() {//构造方法
         initComponents();
         this.getContentPane().add("Center", mainPanel);
         this.setSize(600, 300);
@@ -83,7 +83,7 @@ public class Demo3 extends JFrame implements ActionListener, Runnable {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-            	Demo3 jtable = new Demo3();
+            	JTableDemo jtable = new JTableDemo();
 
                 jtable.setVisible(true);
             }

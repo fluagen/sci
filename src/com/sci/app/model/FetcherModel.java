@@ -9,12 +9,20 @@ public class FetcherModel {
 	private String doctype = "";
 	private String exps = "";
 	
-	private String interval = "5";//秒单位
+	private String interval = "2";//秒单位
 	private String startTime = "";//启动时间
 	
 	private boolean valid = true;
+	private String sid;
+	private String product;
 	
 	
+	public String getProduct() {
+		return product;
+	}
+	public void setProduct(String product) {
+		this.product = product;
+	}
 	public String getDbName() {
 		return dbName;
 	}
@@ -68,5 +76,11 @@ public class FetcherModel {
 	}
 	public void setValid(boolean valid) {
 		this.valid = valid;
+	}
+	public String getSid() {
+		return sid;
+	}
+	public void setSid(String sid) {
+		this.sid = sid;
 	}
 }

@@ -11,14 +11,11 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.sci.app.fetch.Fetcher;
-import com.sci.app.model.DBComboBoxModel;
 import com.sci.app.model.FetcherModel;
 import com.sci.app.toolkit.DateToolkit;
 import com.sci.app.toolkit.MessageDialog;
 import com.sci.app.view.IBaseCustomView;
 import com.sci.app.view.ICondView;
-import com.sci.app.view.IDBView;
 import com.sci.app.view.impl.BaseCustomView;
 import com.sci.app.view.impl.CondView;
 
@@ -28,7 +25,6 @@ public class FetcherTaskDialog {
 	private static final int HIGHT = 700;
 	
 	ICondView condView = null;
-	IDBView dbView = null;
 	IBaseCustomView baseCustomView = null;
 	FetcherModel model;
 
@@ -37,19 +33,20 @@ public class FetcherTaskDialog {
 		final JDialog dialog = new JDialog(owner,modal);
 		
 		dialog.setSize(WIDTH, HIGHT);
+		dialog.setTitle("创建抓取任务");
 		dialog.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(15, 10, 15, 10);//设置组件之间彼此的间距
 		
 		
-		baseCustomView = new BaseCustomView();
+		baseCustomView = BaseCustomView.getInstance();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.gridwidth = 0;
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 		dialog.add(baseCustomView.getJPanle(),gbc);
 		
-		condView = new CondView();
+		condView = CondView.getInstance();
 		JPanel condPanel = condView.getJPanel();
 		gbc.gridwidth = 0;
 		gbc.gridheight = 1;
@@ -71,8 +68,7 @@ public class FetcherTaskDialog {
 			public void actionPerformed(ActionEvent e) {
 				model = new FetcherModel();
 				if(baseCustomView.getDBComponent() != null){
-					String code = DBComboBoxModel.nameCodeMap.get(baseCustomView.getDBComponent().getSelectedItem());
-					model.setDbName(code);
+					model.setDbName(baseCustomView.getDBComponent().getSelectedItem().toString());
 				}
 				if(baseCustomView.getStartTimeComponent() != null){
 					model.setStartTime(baseCustomView.getStartTimeComponent().getText());
@@ -103,8 +99,8 @@ public class FetcherTaskDialog {
 		});
 		
 		bottomPanel.add(btn);
-		
 		dialog.add(bottomPanel,gbc);
+		
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		dialog.setVisible(true);
 		

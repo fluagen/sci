@@ -20,15 +20,24 @@ public class BaseCustomView implements IBaseCustomView{
 	private JComboBox dbComponent = null;
 	private JTextField intervalComponent = null;
 	private JTextField startTimeComponent = null;
-	private JLabel startTimeTipComponent = null;
 	
-	public BaseCustomView(){
+	private static BaseCustomView view = null;
+	
+	private BaseCustomView(){
 		panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		
 		drawDB(panel);
 		drawInterval(panel);
 		drawStartTime(panel);
+	}
+	
+	public static BaseCustomView getInstance(){
+		if(view == null){
+			view = new BaseCustomView();
+		}
+		view.getStartTimeComponent().setText(DateToolkit.getToday());
+		return view;
 	}
 	
 	@Override
@@ -50,18 +59,13 @@ public class BaseCustomView implements IBaseCustomView{
 		return startTimeComponent;
 	}
 
-	@Override
-	public JLabel getStartTimeTipComponent() {
-		return startTimeTipComponent;
-	}
-
 	private void drawDB(JPanel pl){
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(15, 10, 15, 10);//设置组件之间彼此的间距
 		gbc.anchor = GridBagConstraints.WEST;
 		
 		JLabel label = new JLabel("数据库：");
-		dbComponent = new JComboBox(new DBComboBoxModel());
+		dbComponent = new JComboBox(DBComboBoxModel.getInstance());
 		
 		gbc.gridwidth = 1;
 		gbc.weightx = 0;
@@ -83,7 +87,7 @@ public class BaseCustomView implements IBaseCustomView{
 		gbc.anchor = GridBagConstraints.WEST;
 		
 		JLabel label = new JLabel("执行频率：");
-		intervalComponent = new JTextField("5");
+		intervalComponent = new JTextField("2");
 		intervalComponent.setPreferredSize(new Dimension(50,20));
 		JLabel label2 = new JLabel("秒");
 		
@@ -111,7 +115,7 @@ public class BaseCustomView implements IBaseCustomView{
 		JLabel label = new JLabel("开始时间：");
 		startTimeComponent = new JTextField(DateToolkit.getToday());
 		startTimeComponent.setPreferredSize(new Dimension(180,20));
-		startTimeTipComponent = new JLabel("格式如：2014-12-12 18:00:00");
+		JLabel startTimeTipComponent = new JLabel("格式如：2014-12-12 18:00:00");
 		gbc.gridwidth = 1;
 		gbc.weightx = 0;
 		gbc.weighty = 0;

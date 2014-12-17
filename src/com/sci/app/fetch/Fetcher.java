@@ -1,7 +1,9 @@
 package com.sci.app.fetch;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,6 +13,7 @@ import clojure.lang.RT;
 import clojure.lang.Symbol;
 
 import com.sci.app.model.FetcherModel;
+import com.sci.app.toolkit.DBType;
 
 public class Fetcher {
 
@@ -21,24 +24,33 @@ public class Fetcher {
 	}
 	private static IFn getSID = RT.var("com.sci.app.clojure.core",
 			"getSID").fn();
+	private static IFn getProductProp = RT.var("com.sci.app.clojure.core",
+			"get-product-prop").fn();
 	private static IFn set_search_adv = RT.var("com.sci.app.clojure.core",
 			"set-search-adv").fn();
 	private static IFn fetch_file = RT.var("com.sci.app.clojure.core",
 			"fetch-file").fn();
 	
+	private static String ROOTDIC = System.getProperty("user.dir")+File.separator+"fetchFile";
+	private static String SAVEDRESC = "save/savedrecs.txt";
+	private static String CHARTSET = "UTF-8";
+	
 	FetcherModel model;
 	File localDic;
 	String sid;
+	Object productProp;
 	
-	public Fetcher(FetcherModel model){
-		this.model = model;
-		sid = makeSid(model);
+	public Fetcher(FetcherModel fetcherModel){
+		this.model = fetcherModel;
+		this.model.setProduct(DBType.getProduct(fetcherModel.getDbName()));
+		sid = makeSid(fetcherModel);
 		localDic = makeLocalDic(sid);
+		productProp = getProductProp.invoke(sid,this.model);
 	}
 	
 	
 	private File makeLocalDic(String sid){
-		File dic = new File(System.getProperty("user.dir")+File.separator+"fetchFile"+File.separator+sid);
+		File dic = new File(ROOTDIC+File.separator+sid);
 		if(!dic.exists()){
 			dic.mkdirs();
 		}
@@ -60,17 +72,18 @@ public class Fetcher {
 	public Integer getRecordTotal(){
 		int total = 0;
 		try{
-			String countRecord = (String)set_search_adv.invoke(sid,model);
+			String countRecord = (String)set_search_adv.invoke(productProp);
 			countRecord = countRecord.replace(",", "");
 			total = Integer.parseInt(countRecord);	
 		}catch(Exception e){
+			e.printStackTrace();
 		}
 		return total;
 	}
 	
 	public String fetch(int startNum,int endNum){
 		
-		String content = (String) fetch_file.invoke(sid,model.getExps(),startNum,endNum);
+		String content = (String) fetch_file.invoke(productProp,startNum,endNum);
 		
 		write(startNum,endNum,content);
 		
@@ -81,10 +94,10 @@ public class Fetcher {
 		File f = new File(localDic.getPath()+File.separator+startNum+"_"+endNum+".txt");
 		try {
 //			f.createNewFile();
-			PrintWriter w = new PrintWriter(f);
-			w.write(content);
-			w.flush();
-			w.close();
+			FileOutputStream out = new FileOutputStream(f);
+			out.write(content.getBytes(CHARTSET));
+			out.flush();
+			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -98,8 +111,8 @@ public class Fetcher {
 		try{
 			File dic = new File(localDic.getPath()+File.separator+"save");
 			dic.mkdirs();
-			File savedrecs = new File(localDic.getPath()+File.separator+"save/savedrecs.txt");
-			PrintWriter writer = new PrintWriter(savedrecs);
+			File savedrecs = new File(localDic.getPath()+File.separator+SAVEDRESC);
+			BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(savedrecs));
 			for(int i=0; i<files.length; i++){
 				//File f = files[i];
 				//if(f.isDirectory()) continue;
@@ -110,18 +123,27 @@ public class Fetcher {
 					if(line.contains("FN") || line.contains("VR") || line.contains("EF")){
 						continue;
 					}
-					writer.println(line);
+					line = line + "\n";
+					out.write(line.getBytes(CHARTSET));
+					out.flush();
 				}
 				reader.close();
-				writer.flush();
 			}
-			writer.flush();
-			writer.close();
+			out.flush();
+			out.close();
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
 		return true;
+	}
+	
+	public static String getRootDic(){
+		return ROOTDIC;
+	}
+	
+	public static String getSavedresc(){
+		return SAVEDRESC;
 	}
 	
 	public static void main(String[] args){

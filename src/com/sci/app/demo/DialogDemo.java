@@ -1,4 +1,4 @@
-package com.sci.app;
+package com.sci.app.demo;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-public class Demo4 {
+public class DialogDemo {
 
     private void createAndShowGUI() {
 
@@ -95,7 +95,7 @@ public class Demo4 {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {                
-                new Demo4().createAndShowGUI();
+                new DialogDemo().createAndShowGUI();
             }
         });
     }

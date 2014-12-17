@@ -1,4 +1,4 @@
-package com.sci.app;
+package com.sci.app.demo;
 
 import java.awt.Component;
 import java.awt.Dimension;

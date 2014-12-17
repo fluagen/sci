@@ -1,27 +1,42 @@
 package com.sci.app.toolkit;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Vector;
 
 public class DBType {
 
-	private static Vector<String> dbTypes = new Vector<String>();
+	public static Vector<String> dbTypes = new Vector<String>();
 	
-	private static Vector<String> create(){
-		Vector<String> v = new Vector<String>();
-		v.add("Web of Science核心合集");
-		v.add("BIOSIS Previews");
-		v.add("Derwent Innovations Index");
-		v.add("Inspec");
-		v.add("KCI-朝鲜语期刊数据库");
-		v.add("MEDLINE");
-		v.add("SciELO Citation Index");
-		return v;
+	private static LinkedHashMap<String,String> productMap = new LinkedHashMap<String,String>();
+	
+	static{
+		productMap.put("WOS", "Web of Science核心合集");
+		productMap.put("BIOSIS", "BIOSIS Previews");
+		productMap.put("DIIDW", "Derwent Innovations Index");
+		productMap.put("INSPEC", "Inspec");
+		productMap.put("KJD", "KCI-朝鲜语期刊数据库");
+		productMap.put("MEDLINE", "MEDLINE");
+		productMap.put("SCIELO", "SciELO Citation Index");
+		
+		dbTypes.addAll(productMap.values());
 	}
 	
 	public static Vector<String> getDBTypes(){
-		if(dbTypes == null || dbTypes.isEmpty()){
-			dbTypes = create();
-		}
 		return dbTypes;
+	}
+	
+	public static String getProduct(String dbName){
+		String product = "";
+		if(dbName == null || dbName.equals("")){
+			return "";
+		}
+		for(Map.Entry<String, String> e : productMap.entrySet()){
+			if(e.getValue().equals(dbName)){
+				product = e.getKey();
+				break;
+			}
+		}
+		return product;
 	}
 }

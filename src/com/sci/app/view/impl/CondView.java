@@ -29,10 +29,11 @@ public class CondView implements ICondView{
 	private JList doctypeComponent = null;
 	private JTextArea expsComponent = null;
 	
-	public CondView(){
+	private static CondView view = null;
+	
+	private CondView(){
 		panel = new JPanel();
 		panel.setPreferredSize(new Dimension(400,500));
-//		panel.setSize(new Dimension(400,500));
 		panel.setBorder(BorderFactory.createTitledBorder("检索条件"));
 		panel.setLayout(new GridBagLayout());
 		
@@ -41,6 +42,13 @@ public class CondView implements ICondView{
 		drawDoctype(panel);
 		drawExps(panel);
 		drawBottom(panel);
+	}
+	
+	public static CondView getInstance(){
+		if(view == null){
+			view = new CondView();
+		}
+		return view;
 	}
 	
 	public void drawTimespan(JPanel panel){
@@ -69,6 +77,7 @@ public class CondView implements ICondView{
 //		to.setPreferredSize(new Dimension(30,10));
 		panel.add(to,gbc);
 		toTimespanComponent = new JComboBox(Timespan.getTimespan());
+		toTimespanComponent.setSelectedIndex(toTimespanComponent.getItemCount()-1);
 		panel.add(toTimespanComponent,gbc);
 		
 		JPanel strut = new JPanel();
@@ -90,8 +99,9 @@ public class CondView implements ICondView{
 		gbc.weightx = 0;
 		panel.add(label,gbc);
 		
-		JList languageComponent = new JList(Language.getLanguages());
+		languageComponent = new JList(Language.getLanguages());
 		//list.setPreferredSize(new Dimension(200,80));
+		languageComponent.setSelectedIndex(0);
 		languageComponent.setVisibleRowCount(5);
 		languageComponent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scroll = new JScrollPane(languageComponent);
@@ -121,8 +131,9 @@ public class CondView implements ICondView{
 		gbc.weightx = 0;
 		panel.add(label,gbc);
 		
-		JList doctypeComponent = new JList(DocType.getDocTypes());
+		doctypeComponent = new JList(DocType.getDocTypes());
 		//list.setPreferredSize(new Dimension(200,80));
+		doctypeComponent.setSelectedIndex(0);
 		doctypeComponent.setVisibleRowCount(5);
 		doctypeComponent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scroll = new JScrollPane(doctypeComponent);

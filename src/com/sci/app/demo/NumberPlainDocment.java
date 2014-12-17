@@ -1,4 +1,4 @@
-package com.sci.app;
+package com.sci.app.demo;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
