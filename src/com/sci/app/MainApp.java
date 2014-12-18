@@ -9,8 +9,6 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 
 import com.sci.app.fetch.Fetcher;
@@ -40,6 +39,9 @@ public class MainApp extends JFrame{
 		Dimension screenSize = kit.getScreenSize();
 		int width = screenSize.width/2;
 		int height = screenSize.height/2;
+		width = width < 1200 ? 1200 : width;
+		height = height < 600 ? 600 : height;
+		
 		setSize(width, height);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,6 +63,7 @@ public class MainApp extends JFrame{
 		gbc.anchor = GridBagConstraints.WEST;
 		
 		table = new FetcherTable(tableModel);
+		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		scrollPane = new JScrollPane(table);
 		
 		gbc.gridwidth = 0;
@@ -70,6 +73,7 @@ public class MainApp extends JFrame{
 		
 		final JPanel buttons = new JPanel();
 		buttons.setLayout(new GridBagLayout());
+		buttons.setPreferredSize(new Dimension(500,30));
 		JButton fetchBtn = new JButton("新增抓取任务");
 		JButton exportBtn = new JButton("导出");
 		JButton mergeBtn = new JButton("合并后导出");
@@ -95,18 +99,20 @@ public class MainApp extends JFrame{
 				TaskExecutor.execute(tableModel, model);
 			}
 		});
+		
 		exportBtn.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int rowIndex = table.getSelectedRow();
-				if(rowIndex != 1){
+				int count = table.getSelectedRowCount();
+				if(count != 1){
 					MessageDialog.showMessage("请选取一条记录导出！");
 					return;
 				}
+				int rowIndex = table.getSelectedRow();
 				String code = (String) table.getValueAt(rowIndex, tableModel.getStatusCodeColumnIndex());
 				if(code == null || !code.equals(FetcherTableModel.STATUSCODE_OK)){
-					MessageDialog.showMessage("该记录不可导出！");
+					MessageDialog.showMessage("未成功完成的任务不可导出！");
 					return;
 				}
 				String sid = (String) table.getValueAt(rowIndex, tableModel.getSidColumnIndex());
@@ -143,40 +149,48 @@ public class MainApp extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				 int[] rows = table.getSelectedRows();
-				 if(rows.length < 2){
+				int[] rows = table.getSelectedRows();
+				if (rows.length < 2) {
 					MessageDialog.showMessage("请选择2条以上已完成的记录进行合并导出！");
 					return;
-				 }
-				 JFileChooser fc = new JFileChooser();
-				 int returnVal = fc.showSaveDialog(buttons);
-				 if (returnVal == JFileChooser.APPROVE_OPTION) {
-						try {
-							File file = fc.getSelectedFile();
-							LinkedHashMap<String,StringBuilder> buf = new LinkedHashMap<String,StringBuilder>();
-							for (int i = 0; i < rows.length; i++) {
-								String code = (String) table.getValueAt(rows[i],tableModel.getStatusCodeColumnIndex());
-								if (code == null || !code.equals(FetcherTableModel.STATUSCODE_OK)) {
-									MessageDialog.showMessage("存在未完成的任务，合并导出不可用！");
-									return;
-								}
-	
-								String sid = (String) table.getValueAt(rows[i],tableModel.getSidColumnIndex());
-								File savedrecs = new File(Fetcher.getRootDic()
-										+ File.separator + sid + File.separator
-										+ Fetcher.getSavedresc());
-								buf.putAll(SavedrescMerger.parseToMap(savedrecs));
-							}
-							FileOutputStream out = new FileOutputStream(file);
-							for(StringBuilder str : buf.values()){
-								out.write(str.toString().getBytes("UTF-8"));
-								out.flush();
-							}
-							out.close();
-							MessageDialog.showMessage("合并导出完成！");
-						} catch (Exception e1) {
-							MessageDialog.showMessage(e1.getMessage());
+				}
+				for (int i = 0; i < rows.length; i++) {
+
+					String code = (String) table.getValueAt(rows[i],
+							tableModel.getStatusCodeColumnIndex());
+					if (code == null
+							|| !code.equals(FetcherTableModel.STATUSCODE_OK)) {
+						MessageDialog.showMessage("存在未成功完成的任务，合并导出不可用！");
+						return;
+					}
+				}
+				LinkedHashMap<String, StringBuilder> buf = new LinkedHashMap<String, StringBuilder>();
+				try {
+					JFileChooser fc = new JFileChooser();
+					int returnVal = fc.showSaveDialog(buttons);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						File file = fc.getSelectedFile();
+						FileOutputStream out = new FileOutputStream(file);
+						for(int i=0; i<rows.length; i++){//合并
+							String sid = (String) table.getValueAt(rows[i],
+									tableModel.getSidColumnIndex());
+							File savedrecs = new File(Fetcher.getRootDic()
+									+ File.separator + sid + File.separator
+									+ Fetcher.getSavedresc());
+							buf.putAll(SavedrescMerger.parseToMap(savedrecs));
 						}
+						for (StringBuilder str : buf.values()) {
+							out.write(str.toString().getBytes("UTF-8"));
+							out.flush();
+						}
+						out.close();
+						MessageDialog.showMessage("合并导出完成！");
+					}
+				} catch (Exception e1) {
+					MessageDialog.showMessage(e1.getMessage());
+				} finally {
+					buf.clear();
+					buf = null;
 				}
 			}
 		});

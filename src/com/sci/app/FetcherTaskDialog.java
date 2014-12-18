@@ -61,14 +61,17 @@ public class FetcherTaskDialog {
 		gbc.gridheight = 1;
 		gbc.weighty = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		JButton btn = new JButton("确定");
-		btn.addActionListener(new ActionListener() {
+		JButton okBtn = new JButton("确定");
+		okBtn.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				model = new FetcherModel();
 				if(baseCustomView.getDBComponent() != null){
 					model.setDbName(baseCustomView.getDBComponent().getSelectedItem().toString());
+				}
+				if(baseCustomView.getIntervalComponent() != null){
+					model.setInterval(baseCustomView.getIntervalComponent().getText());
 				}
 				if(baseCustomView.getStartTimeComponent() != null){
 					model.setStartTime(baseCustomView.getStartTimeComponent().getText());
@@ -97,9 +100,21 @@ public class FetcherTaskDialog {
 				dialog.dispose();
 			}
 		});
+		JButton cancelBtn = new JButton("取消");
+		cancelBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				model = null;
+				dialog.dispose();
+			}
+		});
 		
-		bottomPanel.add(btn);
+		bottomPanel.add(okBtn);
+		bottomPanel.add(cancelBtn);
 		dialog.add(bottomPanel,gbc);
+		
+		
 		
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		dialog.setVisible(true);

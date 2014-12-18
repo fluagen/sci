@@ -35,8 +35,10 @@ public class FetcherTable extends JTable{
 		timespanColumn.setPreferredWidth(80);
 		TableColumn intervalColumn = this.getColumn(FetcherTableModel.INTERVAL_COLUMNNAME);
 		intervalColumn.setPreferredWidth(20);
+		TableColumn startTimeColumn = this.getColumn(FetcherTableModel.STARTTIME_COLUMNNAME);
+		startTimeColumn.setPreferredWidth(100);
 		TableColumn statusColumn = this.getColumn(FetcherTableModel.STATUS_COLUMNNAME);
-		statusColumn.setPreferredWidth(120);
+		statusColumn.setPreferredWidth(150);
 		
 		FetcherTableMouseAdapterListener tableMouseListener = new FetcherTableMouseAdapterListener(this);
 		this.addMouseListener(tableMouseListener);

@@ -1,14 +1,15 @@
 package com.sci.app;
 
 import java.awt.Cursor;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.JTable;
 
-public class FetcherTableMouseAdapterListener extends MouseMotionAdapter
-	implements MouseListener{
+public class FetcherTableMouseAdapterListener extends MouseAdapter
+	{
 	
 	JTable table;
 	int oldY = 0;
@@ -30,7 +31,7 @@ public class FetcherTableMouseAdapterListener extends MouseMotionAdapter
             height = height + table.getRowHeight(i);
         }
 
-        if (height - e.getY() < 10) {
+        if (height - e.getY() < 5) {
             drag = true;
             table.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
         } else {
@@ -53,34 +54,17 @@ public class FetcherTableMouseAdapterListener extends MouseMotionAdapter
     }
 
     public void mousePressed(MouseEvent e) {
+    	
         oldY = e.getY();
         row = table.rowAtPoint(e.getPoint());
         oldHeight = table.getRowHeight(row);
-        table.setRowSelectionInterval(row, row);
+        //table.setRowSelectionInterval(row, row);
+        super.mousePressed(e);
     }
 
     public void mouseReleased(MouseEvent e) {
         newY = e.getY();
         table.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
