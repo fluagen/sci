@@ -106,7 +106,7 @@ public class MainApp extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				int count = table.getSelectedRowCount();
 				if(count != 1){
-					MessageDialog.showMessage("请选取一条记录导出！");
+					MessageDialog.showMessage("请选取一条任务记录导出！");
 					return;
 				}
 				int rowIndex = table.getSelectedRow();
@@ -151,7 +151,7 @@ public class MainApp extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				int[] rows = table.getSelectedRows();
 				if (rows.length < 2) {
-					MessageDialog.showMessage("请选择2条以上已完成的记录进行合并导出！");
+					MessageDialog.showMessage("请选择2条以上已完成的任务记录进行合并导出！");
 					return;
 				}
 				for (int i = 0; i < rows.length; i++) {
@@ -184,7 +184,7 @@ public class MainApp extends JFrame{
 							out.flush();
 						}
 						out.close();
-						MessageDialog.showMessage("合并导出完成！");
+						MessageDialog.showMessage("合并导出完成, 共生成"+buf.size()+"条记录！");
 					}
 				} catch (Exception e1) {
 					MessageDialog.showMessage(e1.getMessage());

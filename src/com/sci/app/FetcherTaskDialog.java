@@ -124,6 +124,16 @@ public class FetcherTaskDialog {
 	
 	private boolean verify(FetcherModel model){
 		boolean passed = true;
+		if(model.getInterval() == null || model.getInterval().equals("")){
+			MessageDialog.showMessage("请输入正确的执行频率！");
+			return false;
+		}
+		try{
+			Integer.parseInt(model.getInterval());
+		}catch(Exception e){
+			MessageDialog.showMessage("请输入正确的执行频率！");
+			return false;
+		}
 		//验证任务开始时间格式
 		if(!DateToolkit.verify(model.getStartTime())){
 			MessageDialog.showMessage("请输入正确的日期格式！");

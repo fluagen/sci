@@ -16,7 +16,7 @@ public class FetcherTable extends JTable{
 
 	public FetcherTable(FetcherTableModel model){
 		super(model);
-		this.setRowHeight(30);
+		this.setRowHeight(50);
 		TableColumn sidColumn = this.getColumn(FetcherTableModel.SID_COLUMNNAME);
 		sidColumn.setMaxWidth(0);
 		sidColumn.setMinWidth(0);
@@ -38,14 +38,15 @@ public class FetcherTable extends JTable{
 		TableColumn startTimeColumn = this.getColumn(FetcherTableModel.STARTTIME_COLUMNNAME);
 		startTimeColumn.setPreferredWidth(100);
 		TableColumn statusColumn = this.getColumn(FetcherTableModel.STATUS_COLUMNNAME);
-		statusColumn.setPreferredWidth(150);
+		statusColumn.setPreferredWidth(180);
+		statusColumn.setCellRenderer(textRender);
 		
 		FetcherTableMouseAdapterListener tableMouseListener = new FetcherTableMouseAdapterListener(this);
 		this.addMouseListener(tableMouseListener);
 		this.addMouseMotionListener(tableMouseListener);
 		
 		TableColumn expsColumn = this.getColumn(FetcherTableModel.EXPS_COLUMNNAME);
-		expsColumn.setPreferredWidth(150);
+		expsColumn.setPreferredWidth(200);
 		expsColumn.setCellRenderer(textRender);
 		
 		TableColumn progressBar = this.getColumn(FetcherTableModel.PROGRESS_COLUMNNAME);

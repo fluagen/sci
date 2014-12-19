@@ -28,7 +28,7 @@ public class TaskExecutor {
 			public void run() {
 //				System.out.println("TaskExecutor scheduled time:"+ new Date());
 //				tableModel.setValueAt("任务执行中", row, statusColumnIndex);
-				tableModel.setTaskStatus(row, FetcherTableModel.STATUSCODE_RUNNING, "任务执行中");
+				tableModel.setTaskStatus(row, FetcherTableModel.STATUSCODE_RUNNING, "任务执行中...");
 				int interval = Integer.parseInt(model.getInterval());
 				int perNum = 50;
 				Fetcher fetcher = new Fetcher(model);
@@ -49,10 +49,15 @@ public class TaskExecutor {
 				int pagenum = Pagination.countPageNum(total, perNum);
 				System.out.println("total:"+total+",pagenum:"+pagenum);
 				
-				
+				String runningInfo = "";
 				for(int i=1; i<=pagenum; i++){
-					fetcher.fetch(Pagination.getStartNum(i, perNum), Pagination.getEndNum(i, perNum));
+					int startNum = Pagination.getStartNum(i, perNum);
+					int endNum = Pagination.getEndNum(i, perNum);
+					fetcher.fetch(startNum, endNum);
 					tableModel.updateProgress(row, ProgressBarRenderer.getProgrees(i, pagenum));
+					runningInfo = "任务执行中...\n"
+							+ "共"+total+"条记录，已抓取"+endNum+"条记录";
+					tableModel.setTaskStatus(row, FetcherTableModel.STATUSCODE_RUNNING, runningInfo);
 					try {
 						Thread.sleep(interval*1000);
 					} catch (InterruptedException e) {
@@ -61,7 +66,9 @@ public class TaskExecutor {
 				}
 				fetcher.mergeTxt();
 				tableModel.updateProgress(row, 100);
-				tableModel.setTaskStatus(row, FetcherTableModel.STATUSCODE_OK, "任务完成");
+				runningInfo = "任务已完成\n"
+						+ "共抓取到"+total+"条记录";
+				tableModel.setTaskStatus(row, FetcherTableModel.STATUSCODE_OK, runningInfo);
 			}
 		}, DateToolkit.delay(model.getStartTime()), TimeUnit.MILLISECONDS);
 	}
