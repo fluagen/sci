@@ -38,7 +38,7 @@
    "mode" "OpenOutputService"
    "qid" "1"
    "format" "saveToFile"
-   "filters" "TITLE SOURCE ISSN AUTHORSIDENTIFIERS ACCESSION_NUM AUTHORS"
+   "filters" "USAGEIND TITLE SUBJECT_CATEGORY DOCTYPE SOURCE ISSN PUBINFO AUTHORSIDENTIFIERS ACCESSION_NUM ABSTRACT KEYWORDS KJD_CATEGORY LANG AUTHORS"
    ;"mark_from" "1"
    ;"mark_to" "10"
    ;"incitesCount" "36776"
@@ -46,7 +46,7 @@
    "count_new_items_marked" "0"
    "IncitesEntitled" "no"
    "value(record_select_type)" "pagerecords"
-   "fields_selection" "TITLE SOURCE ISSN AUTHORSIDENTIFIERS ACCESSION_NUM AUTHORS"
+   "fields_selection" "USAGEIND TITLE SUBJECT_CATEGORY DOCTYPE SOURCE ISSN PUBINFO AUTHORSIDENTIFIERS ACCESSION_NUM ABSTRACT KEYWORDS KJD_CATEGORY LANG AUTHORS"
    "save_options" "fieldtagged"
    }
   )

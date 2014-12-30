@@ -33,7 +33,7 @@
    "mode" "OpenQuickOutputForDII"
    "qid" "1"
    "format" "saveToFile"
-   "filters" "ASSIGNEES INVENTORS TITLE PATNUM"
+   "filters" "FullNoCitRef"
    ;"mark_from" "1"
    ;"mark_to" "10"
    ;"incitesCount" "36776"
@@ -41,7 +41,7 @@
    "count_new_items_marked" "0"
    "IncitesEntitled" "no"
    "value(record_select_type)" "pagerecords"
-   "fields_selection" "ASSIGNEES INVENTORS TITLE PATNUM"
+   "fields_selection" "FullNoCitRef"
    "save_options" "fieldtagged"
    }
   )
