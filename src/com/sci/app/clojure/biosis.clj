@@ -38,6 +38,8 @@
    "product" "BIOSIS"
    "mark_id" "BIOSIS"
    "colName" "BIOSIS"
+   "displayCitedRefs"	"true"
+   "displayTimesCited"	"true"
    "search_mode" "AdvancedSearch"
    "sortBy" "PY.D;LD.D;SO.A;VL.D;PG.A;AU.A"
    "mode" "OpenOutputService"

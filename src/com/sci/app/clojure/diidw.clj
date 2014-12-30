@@ -28,6 +28,8 @@
    "product" "DIIDW"
    "mark_id" "DIIDW"
    "colName" "DIIDW"
+   "displayCitedRefs"	"true"
+   "displayTimesCited"	"true"
    "search_mode" "AdvancedSearch"
    "sortBy" "Date"
    "mode" "OpenQuickOutputForDII"

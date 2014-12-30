@@ -33,6 +33,8 @@
    "product" "KJD"
    "mark_id" "KJD"
    "colName" "KJD"
+   "displayCitedRefs"	"true"
+   "displayTimesCited"	"true"
    "search_mode" "AdvancedSearch"
    "sortBy" "PY.D;LD.D;SO.A;VL.D;PG.A;AU.A.en"
    "mode" "OpenOutputService"

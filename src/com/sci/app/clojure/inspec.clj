@@ -35,6 +35,8 @@
    "product" "INSPEC"
    "mark_id" "INSPEC"
    "colName" "INSPEC"
+   "displayCitedRefs"	"true"
+   "displayTimesCited"	"true"
    "search_mode" "AdvancedSearch"
    "sortBy" "PY.D;LD.D;SO.A;VL.D;PG.A;AU.A"
    "mode" "OpenOutputService"

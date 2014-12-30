@@ -45,6 +45,8 @@
    "product" "MEDLINE"
    "mark_id" "MEDLINE"
    "colName" "MEDLINE"
+   "displayCitedRefs"	"true"
+   "displayTimesCited"	"true"
    "search_mode" "AdvancedSearch"
    "sortBy" "PY.D;LD.D;SO.A;VL.D;PG.A;AU.A"
    "mode" "OpenOutputService"
